@@ -219,8 +219,8 @@ Request
   "waypoints": ["45.5050,-73.5600"]
 }
 ```
-## Option B — Query Parameters (Google-compatible)
-```json
+## ✅Option B — Query Parameters (Google-compatible)
+
 GET https://maps.<stage>.goseanto.com/directions
       ?origin=45.5017,-73.5673
       &destination=45.5081,-73.5550
@@ -228,7 +228,7 @@ GET https://maps.<stage>.goseanto.com/directions
       &traffic=true
       &waypoints=45.5050,-73.5600
       &key=<API_KEY>
-```
+      
 Response
 
 Google Directions JSON (proxied directly).
