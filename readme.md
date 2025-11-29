@@ -152,7 +152,11 @@ Municipal fleets
 These systems generate heavy Google load — we optimize it.
 
 ## ⚙️ API Endpoints
-1. ETA (Distance Matrix format)
+
+We support **both JSON body AND traditional query parameters**  
+
+
+### ✅ Option A — JSON Body (recommended)
 POST https://maps.<stage>.goseanto.com/eta?key=<API_KEY>
 
 
@@ -164,17 +168,48 @@ Request
   "traffic": true
 }
 ```
+## Option B — Query Parameters (Google-compatible)
+ ```json
+ GET https://maps.<stage>.goseanto.com/eta
+      ?origins=45.5017,-73.5673
+      &destinations=45.5081,-73.5550
+      &traffic=true
+      &key=<API_KEY>
+
+```
+
+Response- Google Distance Matrix JSON (unchanged).
+```json
+{
+  "destination_addresses": ["155 Rue Notre Dame E, Montréal, QC"],
+  "origin_addresses": ["René-Lévesque / Robert-Bourassa, Montréal, QC"],
+  "rows": [
+    {
+      "elements": [
+        {
+          "distance": { "text": "2.0 km", "value": 1982 },
+          "duration": { "text": "10 mins", "value": 595 },
+          "status": "OK"
+        }
+      ]
+    }
+  ],
+  "status": "OK"
+}
+```
 
 
-Response
 
-Google Distance Matrix JSON (unchanged).
 
-2. Directions
+
+2. Directions 
+
+Supports **JSON body OR query parameters**.
 POST https://maps.<stage>.goseanto.com/directions?key=<API_KEY>
 
 
 Request
+### ✅ Option A — JSON Body (recommended)
 ```json
 {
   "origin": "45.5017,-73.5673",
@@ -184,10 +219,21 @@ Request
   "waypoints": ["45.5050,-73.5600"]
 }
 ```
-
+## Option B — Query Parameters (Google-compatible)
+```json
+GET https://maps.<stage>.goseanto.com/directions
+      ?origin=45.5017,-73.5673
+      &destination=45.5081,-73.5550
+      &mode=driving
+      &traffic=true
+      &waypoints=45.5050,-73.5600
+      &key=<API_KEY>
+```
 Response
 
 Google Directions JSON (proxied directly).
+
+
 
 ## 🔄 Failover Pattern (Recommended)
 
