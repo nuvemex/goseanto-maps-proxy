@@ -121,19 +121,72 @@ Key rotation
 
 Clients are isolated and cannot see each other's traffic.
 
-## 🌍 Regional Deployment (Data Residency)
+## ✅ Full Legal & Compliance Alignment
 
-We support deployments in:
+Supported regions:
 
-🇨🇦 Canada (ca-central-1) — PIPEDA-compliant
+🇨🇦 Canada (ca-central-1) — fully aligned with PIPEDA and provincial privacy acts
 
-🇺🇸 US regions — HIPAA-ready architecture
+🇺🇸 United States — HIPAA-ready architecture; no PHI leaves the region
 
-🇪🇺 EU regions — GDPR alignment
+🇪🇺 European Union — GDPR data handling and retention practices
 
-Additional regions available on request
+🌎 Additional regions available on request (LATAM, APAC, Middle East)
 
-All cache + metadata stays in-region.
+Our platform is designed to comply with:
+
+Regional privacy laws (PIPEDA, GDPR, CCPA, etc.)
+
+Data residency requirements for government/public safety systems
+
+Zero cross-region replication unless explicitly approved
+
+Transparent retention policies (cache TTL only, no long-term storage)
+
+No personally identifiable information (PII) stored
+
+No PHI processed unless the client enables HIPAA mode in US deployments
+
+We never store:
+
+driver names
+
+unit identifiers
+
+caller information
+
+incident details
+
+Only minimal routing input (lat/lng pairs) is processed, and only for a short cache window.
+
+## ⚡ Deployment Speed
+
+A fully isolated deployment for your environment can be provisioned in:
+
+⏱ 2–4 hours (standard)
+⏱ <1 hour (urgent deployment)
+
+Includes:
+
+Dedicated API Gateway
+
+Dedicated compute layer (Lambda)
+
+Dedicated DynamoDB cache + metrics tables
+
+Per-client API key + throttling profile
+
+Optional VPC/private endpoint integration
+
+## 🔐 Zero Data Leakage Guarantee
+
+No customer traffic is mixed with any other customer
+
+No logs contain coordinates unless explicitly requested
+
+No data is exported outside your chosen region
+
+Cache automatically expires — nothing is written to long-term storage
 
 ## 🧭 Sectors We Support
 
