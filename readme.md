@@ -1,10 +1,12 @@
-Goseanto Maps Proxy — High-Reliability ETA & Directions Layer
+# Goseanto Maps Proxy — High-Reliability ETA & Directions Layer
 
-A lightweight routing layer for public safety, dispatch, taxi, and logistics systems.
 
-Designed for platforms that need reliable, predictable, and cost-efficient access to Google Maps Distance Matrix and Directions.
+A lightweight routing layer for public safety, CAD/dispatch, taxi, and logistics systems that need predictable, stable, and cost-efficient access to Google Maps Distance Matrix and Directions APIs.
 
-🚀 What the Goseanto Maps Proxy Does
+You keep your existing Google Maps logic.
+You simply switch your calls to our gateway.
+
+## 🚀 What the Goseanto Maps Proxy Does
 
 Instead of every unit calling Google directly:
 
@@ -14,156 +16,163 @@ Unit → Google → $0.005–$0.01 per element
 ...
 
 
-Your units call our gateway:
+## Your units call our gateway:
 
-Unit → Goseanto Proxy → Google (once)
-                       ↳ Shared, cached result (10–20 sec)
+Unit → Goseanto Proxy → Google (1 time)
+                        ↳ Shared cached result (10–20 sec)
 
 
-Same accuracy.
-Same Google data.
-Up to 60–90% cost reduction.
+✔ Same accuracy
+✔ Same Google data
+✔ Up to 60–90% cost reduction
+✔ Far more stable response times
 
-💰 Why This Saves Money
-Google charges:
+## 💰 Why This Saves Money
+
+Google bills:
 
 Per request
 
 Often per element (origins × destinations)
 
-Even if the result is identical to a call 1 second ago
+Even if traffic hasn’t changed
 
-Fleets have duplicate calls:
+Large fleets produce duplicate calls:
 
 20–100 units asking the same ETA
 
 Every 1–3 seconds
 
-For the same incident, same streets, same hospitals
+For the same incident / same streets / same hospital
 
-What we do:
+Our approach:
 
-First request → goes to Google (billed normally)
+First request → goes to Google
 
-Next 10–20 seconds → served from cache
+For the next 10–20 seconds → cache serves identical data
 
 Cache window is shorter than Google’s own traffic update cycle
 
-So accuracy is preserved, but cost drops dramatically.
+Result:
+Accuracy stays the same.
+Billing drops dramatically.
 
-🎯 Why Accuracy Stays 100%
+## 🎯 Accuracy Guarantee
 
-Traffic data does NOT update every second.
-Google’s traffic feed updates every 2–7 minutes (varies by city).
+Traffic data does not update every second.
 
-Our cache TTL for traffic is:
+Google updates traffic every 2–7 minutes depending on the city.
 
-10–20 seconds
+Our cache TTL:
+
+Traffic ON  → 10–20 seconds  
+Traffic OFF → longer TTL
 
 
 Meaning:
 
-Your units will never see stale data
+No stale results
 
-Google would return the same ETA if you called them again during this window
+Google would return the same ETA if you called them again
 
-We stay well inside Google’s own accuracy envelope.
+We stay well inside Google’s accuracy envelope
 
-🛡️ Reliability & Failover
+## 🛡️ Reliability & Failover
 
-We return an ETA even if:
+We serve an ETA even if:
 
 Google times out
 
-Google returns 5xx
+Google returns 500/502/503
 
-Network issues occur
+Rate-limits occur
 
-Your region overloads
+Regional outages happen
 
-Fallback behavior:
+Fallback logic:
 
 If Google fails:
-    return last known good ETA (stale-but-safe)
+    return last-known-good ETA
 
 
-Dispatch systems will never freeze waiting for a Google response.
+Dispatch systems will not freeze waiting on Google.
 
-🔑 Per-Client API Keys
+## 🔑 Per-Client API Keys
 
-Each customer receives a dedicated API key, e.g.:
+Each customer receives a dedicated key, e.g.:
 
 EMERES-STG-123
-TAXI-CA-001
-LOGISTICS-EU-555
 
+TAXI-CA-001
+
+LOGISTICS-EU-555
 
 Used for:
 
 Authentication
 
-Individual metrics
+Metrics
 
-Client-level throttling
+Throttling
 
-Client-level API key rotation
+Key rotation
 
-No customer can see another customer’s traffic.
+Clients are isolated and cannot see each other's traffic.
 
-🌍 Regional Deployment
+## 🌍 Regional Deployment (Data Residency)
 
-To meet compliance requirements:
+We support deployments in:
 
-✔ Canada (ca-central-1) — PIPEDA-compliant
-✔ US regions — HIPAA-ready structure
-✔ EU regions — GDPR alignment
-✔ Additional regions available on request
+🇨🇦 Canada (ca-central-1) — PIPEDA-compliant
 
-Data residency is fully controlled.
+🇺🇸 US regions — HIPAA-ready architecture
 
-🧭 Supported Sectors
+🇪🇺 EU regions — GDPR alignment
 
-The system is used for:
+Additional regions available on request
 
-EMS / Paramedic services
+All cache + metadata stays in-region.
 
-Police dispatch (CAD)
+## 🧭 Sectors We Support
 
-Fire services
+EMS / Paramedic
 
-Taxi / ride-hailing
+Police CAD
 
-Logistics & last-mile delivery
+Fire dispatch
 
-Municipal operations
+Ride-hailing / taxi
 
-These sectors hit Google Maps heavily — we stabilize performance and slash costs.
+Logistics & last-mile
 
-⚙️ API Usage
-1. ETA Endpoint
+Municipal fleets
+
+These systems generate heavy Google load — we optimize it.
+
+## ⚙️ API Endpoints
+1. ETA (Distance Matrix format)
 POST https://maps.<stage>.goseanto.com/eta?key=<API_KEY>
 
-Request (JSON)
+
+Request
+
 {
   "origins": ["45.5017,-73.5673"],
   "destinations": ["45.5081,-73.5550"],
   "traffic": true
 }
 
-Traffic behavior
-
-true → live traffic (Google: departure_time=now, traffic_model=best_guess)
-
-false → non-traffic ETA (longer TTL, cheaper)
 
 Response
 
-Google Distance Matrix JSON, unchanged.
+Google Distance Matrix JSON (unchanged).
 
-2. Directions Endpoint
+2. Directions
 POST https://maps.<stage>.goseanto.com/directions?key=<API_KEY>
 
-Request (JSON)
+
+Request
+
 {
   "origin": "45.5017,-73.5673",
   "destination": "45.5081,-73.5550",
@@ -172,19 +181,15 @@ Request (JSON)
   "waypoints": ["45.5050,-73.5600"]
 }
 
+
 Response
 
-Google Directions JSON, proxied as-is.
+Google Directions JSON (proxied directly).
 
-🔄 Failover Strategy (recommended)
+## 🔄 Failover Pattern (Recommended)
 
-Your application should:
-
-Call Goseanto (primary)
-
-If any error occurs → fallback to Google
-
-Continue as normal
+Use our proxy as primary.
+If any error → fallback to Google.
 
 Pseudocode:
 
@@ -197,9 +202,9 @@ try {
 
 Zero operational risk.
 
-📊 What You See in Metrics
+## 📊 Metrics & Transparency
 
-Every client has its own counters:
+Each API key gets daily counters:
 
 total_requests
 
@@ -211,46 +216,42 @@ google_calls
 
 fallback_uses
 
-Stored daily:
+Stored as:
 
-metrics#client:EMERES-STG-123#2025-11-28
+metrics#client:<API_KEY>#YYYY-MM-DD
 
 
-Useful for billing transparency and usage analysis.
+Useful for billing and optimization.
 
-🧪 Test Tools
+## 🧪 Testing Tools
 
-Included:
+Included in this repository:
 
-/postman/gos-maps.postman_collection.json
-/examples/curl/eta.sh
-/examples/curl/directions.sh
+postman/
+examples/curl/
 
-🧱 Architecture (High-Level)
-┌───────────────┐          ┌──────────────┐
-│   Your App     │  HTTPS   │ Goseanto API │
-│ (CAD / Taxi)   ├─────────►│  Gateway     │
-└───────┬────────┘          └──────┬───────┘
-        │                           │
-        │                           ▼
-        │                   ┌──────────────┐
-        │                   │ AWS Lambda   │
-        │                   │ (Go runtime) │
-        │                   └──────┬───────┘
-        │                          │
-        │                          ▼
-        │                   ┌──────────────┐
-        │                   │ DynamoDB     │
-        │                   │ Cache+Metrics│
-        │                   └──────┬───────┘
-        │                          │
-        │                          ▼
-        │                   ┌──────────────┐
-        └──────────────────►│ Google Maps  │
-                            │ Distance+Dir │
-                            └──────────────┘
 
-📦 Licensing & Contact
+ETA test
 
-Open for evaluation and technical testing.
-Commercial use requires API key activation.
+Directions test
+
+Traffic on/off
+
+Waypoints tests
+
+## 🧱 Architecture (High-Level)
+┌──────────────────┐        ┌──────────────────┐
+│    Your App       │ HTTPS │ Goseanto Gateway │
+│ (CAD / Taxi / etc)├──────►│  /eta /directions│
+└──────────┬────────┘        └─────────┬────────┘
+           │                           │
+           ▼                           ▼
+     AWS Lambda (Go)            DynamoDB (cache+metrics)
+           │                           │
+           ▼                           ▼
+                 Google Maps Distance & Directions
+
+## 📦 Licensing & Access
+
+This documentation is public.
+Operational API usage requires an activated API key.
