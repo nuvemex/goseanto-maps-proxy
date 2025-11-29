@@ -10,16 +10,18 @@ You simply switch your calls to our gateway.
 
 Instead of every unit calling Google directly:
 
-Unit → Google → $0.005–$0.01 per element
-Unit → Google → $0.005–$0.01 per element
-Unit → Google → $0.005–$0.01 per element
+Unit → Google → $0.005–$0.01 per element  
+Unit → Google → $0.005–$0.01 per element  
+Unit → Google → $0.005–$0.01 per element  
 ...
 
 
-## Your units call our gateway:
+
+Your units call our gateway:
 
 Unit → Goseanto Proxy → Google (1 time)
                         ↳ Shared cached result (10–20 sec)
+
 
 
 ✔ Same accuracy
@@ -101,7 +103,7 @@ Dispatch systems will not freeze waiting on Google.
 
 Each customer receives a dedicated key, e.g.:
 
-EMERES-STG-123
+Clinent-STG-123
 
 TAXI-CA-001
 
@@ -155,12 +157,13 @@ POST https://maps.<stage>.goseanto.com/eta?key=<API_KEY>
 
 
 Request
-
+```json
 {
   "origins": ["45.5017,-73.5673"],
   "destinations": ["45.5081,-73.5550"],
   "traffic": true
 }
+
 
 
 Response
@@ -172,7 +175,7 @@ POST https://maps.<stage>.goseanto.com/directions?key=<API_KEY>
 
 
 Request
-
+```json
 {
   "origin": "45.5017,-73.5673",
   "destination": "45.5081,-73.5550",
@@ -192,11 +195,13 @@ Use our proxy as primary.
 If any error → fallback to Google.
 
 Pseudocode:
-
-try {
+```json
+{
+  try {
     return callGoseanto();
 } catch {
     return callGoogle();
+}
 }
 
 
@@ -215,11 +220,6 @@ cache_misses
 google_calls
 
 fallback_uses
-
-Stored as:
-
-metrics#client:<API_KEY>#YYYY-MM-DD
-
 
 Useful for billing and optimization.
 
