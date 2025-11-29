@@ -163,7 +163,7 @@ Request
   "destinations": ["45.5081,-73.5550"],
   "traffic": true
 }
-
+```
 
 
 Response
@@ -183,7 +183,7 @@ Request
   "traffic": true,
   "waypoints": ["45.5050,-73.5600"]
 }
-
+```
 
 Response
 
@@ -203,7 +203,7 @@ Pseudocode:
     return callGoogle();
 }
 }
-
+```
 
 Zero operational risk.
 
