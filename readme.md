@@ -163,22 +163,21 @@ POST https://maps.<stage>.goseanto.com/eta?key=<API_KEY>
 Request
 ```json
 {
-  "origins": ["45.5017,-73.5673"],
-  "destinations": ["45.5081,-73.5550"],
-  "traffic": true
+"origins": ["45.5017,-73.5673"],
+"destinations": ["45.5081,-73.5550"],
+"traffic": true
 }
 ```
 ## Option B — Query Parameters (Google-compatible)
- ```json
+```bash
  GET https://maps.<stage>.goseanto.com/eta
       ?origins=45.5017,-73.5673
       &destinations=45.5081,-73.5550
       &traffic=true
       &key=<API_KEY>
-
 ```
 
-Response- Google Distance Matrix JSON (unchanged).
+Response — Google Distance Matrix JSON (unchanged).
 ```json
 {
   "destination_addresses": ["155 Rue Notre Dame E, Montréal, QC"],
@@ -202,7 +201,7 @@ Response- Google Distance Matrix JSON (unchanged).
 
 
 
-2. Directions 
+### 2. Directions 
 
 Supports **JSON body OR query parameters**.
 POST https://maps.<stage>.goseanto.com/directions?key=<API_KEY>
@@ -220,7 +219,7 @@ Request
 }
 ```
 ## ✅Option B — Query Parameters (Google-compatible)
-
+```bash
 GET https://maps.<stage>.goseanto.com/directions
       ?origin=45.5017,-73.5673
       &destination=45.5081,-73.5550
@@ -228,12 +227,11 @@ GET https://maps.<stage>.goseanto.com/directions
       &traffic=true
       &waypoints=45.5050,-73.5600
       &key=<API_KEY>
+```
       
 Response
 
 Google Directions JSON (proxied directly).
-
-
 
 ## 🔄 Failover Pattern (Recommended)
 
@@ -241,7 +239,7 @@ Use our proxy as primary.
 If any error → fallback to Google.
 
 Pseudocode:
-```json
+```js
 {
   try {
     return callGoseanto();
